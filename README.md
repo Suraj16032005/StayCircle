@@ -113,29 +113,6 @@ npm start
 
 ---
 
-## Screenshots
-
-### Home Page
-(Add screenshot here)
-
-### Listing Page
-(Add screenshot here)
-
-### Authentication Page
-(Add screenshot here)
-
----
-
-## Future Improvements
-
-- Booking System
-- Payment Gateway Integration
-- Search & Filter Functionality
-- Google Maps Integration
-- Wishlist Feature
-
----
-
 ## Author
 
 Suraj16032005
