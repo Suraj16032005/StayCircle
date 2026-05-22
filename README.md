@@ -112,40 +112,40 @@ npm start
 ```
 ---
 
+---
+
 ## Screenshots
 
 ### Home Page
 
-Displays all available stay listings with property images, pricing, and navigation options.
+Displays all available stay listings with pricing and property previews.
 
-![Home Page](screenshots/home-page.png)
+![Home Page](screenshots/home.jpeg)
 
-
-
+---
 
 ### Property Details & Reviews
 
-Users can view detailed property information and add reviews with ratings.
+Detailed property page with user reviews and ratings.
 
-![Property Details](screenshots/property-details.png)
+![Review Page](screenshots/review.jpeg)
 
 ---
 
 ### Authentication System
 
-Secure login page implemented using Passport.js authentication middleware.
+Secure login page using Passport.js authentication.
 
-![Login Page](screenshots/login-page.png)
-
----
-
-### Create Listing
-
-Authenticated users can create new property listings with image uploads using Cloudinary and Multer.
-
-![Create Listing](screenshots/create-listing.png)
+![Login Page](screenshots/login.jpeg)
 
 ---
+
+### Create New Listing
+
+Authenticated users can create and upload new listings with images.
+
+![Create Listing](screenshots/add-listing.jpeg)
+
 ---
 
 ## Author
