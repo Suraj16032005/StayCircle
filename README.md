@@ -110,7 +110,42 @@ SECRET=session_secret
 ```bash
 npm start
 ```
+---
 
+## Screenshots
+
+### Home Page
+
+Displays all available stay listings with property images, pricing, and navigation options.
+
+![Home Page](screenshots/home-page.png)
+
+
+
+
+### Property Details & Reviews
+
+Users can view detailed property information and add reviews with ratings.
+
+![Property Details](screenshots/property-details.png)
+
+---
+
+### Authentication System
+
+Secure login page implemented using Passport.js authentication middleware.
+
+![Login Page](screenshots/login-page.png)
+
+---
+
+### Create Listing
+
+Authenticated users can create new property listings with image uploads using Cloudinary and Multer.
+
+![Create Listing](screenshots/create-listing.png)
+
+---
 ---
 
 ## Author
