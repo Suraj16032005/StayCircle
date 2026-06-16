@@ -1,63 +1,46 @@
 <% layout("/layouts/boilerplate") %>
    
-  <body>
-    <h3>All Listings</h3>
+<body>
+  <div class="listings-header mt-4 mb-4">
+    <% if (locals.country) { %>
+      <h2 class="font-weight-bold">Stays in <%= locals.country %></h2>
+      <p class="text-muted">Explore properties listed in <%= locals.country %>.</p>
+    <% } else { %>
+      <h2 class="font-weight-bold">Explore Extraordinary Stays</h2>
+      <p class="text-muted">Find the perfect place to stay, play, or unwind around the world.</p>
+    <% } %>
+  </div>
 
-
-    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+    <% if (alllistings.length === 0) { %>
+      <div class="col-12 text-center my-5 py-5">
+        <div class="mb-4" style="font-size: 4rem; color: #cbd5e0;">
+          <i class="fa-solid fa-map-location-dot"></i>
+        </div>
+        <h3 class="font-weight-bold" style="color: #4a5568;">No such listings exist</h3>
+        <p class="text-muted">We couldn't find any stays in "<%= locals.country %>". Try searching for another country or browse all properties.</p>
+        <a href="/listings" class="btn btn-dark mt-3 px-4 btn-edit-listing">View All Listings</a>
+      </div>
+    <% } else { %>
       <% for(listing of alllistings){ %>
         <a href="/listings/<%=listing._id%>" class="listing-link">
           <div class="card col listing-card">
             <img src="<%=listing.image.url%>" class="card-img-top" alt="listing_img" style="height:20rem">
-
-            <div class="card-img-overlay"></div>
-
             <div class="card-body">
-              <p class="card-text"><b>
+              <p class="card-text mb-1"><b>
                   <%= listing.title %>
                 </b>
-                <br>
-               &#8377;<%= listing.price.toLocaleString("en-IN") %>/night
               </p>
-            </div>
-          </div>
-        </a>
-        <% } %>
-    </div>
-
-
-
-
-
-    <!-- <% layout("/layouts/boilerplate") %>
-
-<div class="container mt-4">
-  <div class="row row-cols-1 row-cols-md-3 g-4">
-
-    <% alllistings.forEach(listing => { %>
-      <div class="col">
-        <a href="/listings/<%= listing._id %>" class="listing-link" style="text-decoration: none; color: inherit;">
-          <div class="card h-100">
-
-            <% if (listing.image && listing.image.url) { %>
-              <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_img" style="height:20rem;">
-            <% } else if (listing.image) { %>
-              <img src="<%= listing.image %>" class="card-img-top" alt="listing_img" style="height:20rem;">
-            <% } else { %>
-              <img src="https://via.placeholder.com/300x200.png?text=No+Image" class="card-img-top" alt="default_img" style="height:20rem;">
-            <% } %>
-
-            <div class="card-body">
-              <h5 class="card-title"><%= listing.title %></h5>
+              <p class="card-text text-muted mb-1" style="font-size: 0.85rem;">
+                <i class="fa-solid fa-location-dot me-1" style="color: #a0aec0;"></i><%= listing.location %>, <%= listing.country %>
+              </p>
               <p class="card-text">
-                &#8377;<%= listing.price.toLocaleString("en-IN") %><br>
-                <%= listing.location %>, <%= listing.country %>
+                <span class="price-tag">&#8377;<%= listing.price.toLocaleString("en-IN") %></span> <span style="font-size: 0.85rem; color: #718096;">/ night</span>
               </p>
             </div>
           </div>
         </a>
-      </div>
-    <% }); %>
-
+      <% } %>
+    <% } %>
   </div>
-</div> -->
+</body>

@@ -1,8 +1,14 @@
 const Listing=require("../models/listing");
 
 module.exports.index= async (req, res) => {
-    const alllistings = await Listing.find();
-    res.render("listings/alllistings.ejs", { alllistings });
+    let { country } = req.query;
+    let alllistings;
+    if (country) {
+        alllistings = await Listing.find({ country: { $regex: new RegExp(country.trim(), 'i') } });
+    } else {
+        alllistings = await Listing.find();
+    }
+    res.render("listings/alllistings.ejs", { alllistings, country });
 };
 
 module.exports.renderNewForm= async (req, res) => {

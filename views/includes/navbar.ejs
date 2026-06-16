@@ -12,6 +12,15 @@
           <a class="nav-link" href="/listings/new">Add New Listing</a>
         </div>
 
+        <form class="d-flex mx-auto search-form" action="/listings" method="GET" style="max-width: 400px; width: 100%;">
+          <div class="input-group">
+            <input class="form-control search-input" type="search" name="country" placeholder="Search country..." aria-label="Search" value="<%= locals.country || '' %>">
+            <button class="btn btn-search" type="submit">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+        </form>
+
          <div class="navbar-nav ms-auto">
           <% if(!currUser){ %>
           <a class="nav-link" href="/login">Login</a>

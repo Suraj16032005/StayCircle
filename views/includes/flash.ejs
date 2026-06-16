@@ -1,16 +1,19 @@
-
-
-<%if(success && success.length){ %>
-<div class="alert alert-success alert-dismissible fade show col-6 offset-3" role="alert">
-  <%=success%>
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<% if (success && success.length) { %>
+<div class="custom-alert custom-alert-success alert alert-dismissible fade show col-6 offset-3" role="alert">
+  <div class="d-flex align-items-center">
+    <i class="fa-solid fa-circle-check"></i>
+    <span><%= success %></span>
+  </div>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="top: 50%; transform: translateY(-50%); padding: 0.5rem 1.25rem;"></button>
 </div>
-<%}%>
+<% } %>
 
-
-<%if(error && error.length){ %>
-<div class="alert alert-danger alert-dismissible fade show col-6 offset-3" role="alert">
-  <%=error%>
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<% if (error && error.length) { %>
+<div class="custom-alert custom-alert-danger alert alert-dismissible fade show col-6 offset-3" role="alert">
+  <div class="d-flex align-items-center">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    <span><%= error %></span>
+  </div>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="top: 50%; transform: translateY(-50%); padding: 0.5rem 1.25rem;"></button>
 </div>
-<%}%>
+<% } %>
