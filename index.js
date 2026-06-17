@@ -5,6 +5,8 @@ if (process.env.NODE_ENV !== "production") {
 
 const express = require("express"); ///used for parsing, giving responses
 const session = require('express-session');
+const { MongoStore } = require("connect-mongo");
+
 const app = express();  // Ye function:
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
@@ -20,13 +22,15 @@ const flash=require("connect-flash");
 const passport=require("passport");
 const localStrategy=require("passport-local");
 const User=require("./models/user.js");
-
+const dbUrl=process.env.ATLASDB_URL;
 
 
 main().catch(err => console.log(err));
 async function main() {
-    await mongoose.connect('mongodb://127.0.0.1:27017/travel');
+    await mongoose.connect(dbUrl);
+    console.log("✅ MongoDB Connected");
 }
+
 
 const path = require("path");
 const ejsMate = require("ejs-mate");
@@ -37,8 +41,19 @@ app.use(express.urlencoded({ extended: true }));//parsing ke liye
 app.use(express.static(path.join(__dirname, "/public"))); //public me sari files hai
 const port = 8080;
 
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    crypto: {secret: process.env.SECRET},
+    touchAfter: 24 * 60 * 60 // time period in seconds
+});
 
-const sessionOptions= {secret : "mysecretmessage",
+store.on("error", function(e){
+    console.log("session store error", e);
+});
+
+const sessionOptions= {
+    store,
+    secret : process.env.SECRET,
      resave: false,
       saveUninitialized:true,
     cookie:{
@@ -51,7 +66,6 @@ const sessionOptions= {secret : "mysecretmessage",
 app.get("/", (req, res) => {
     res.send("root is also working");
 });
-
 
 app.use(session(sessionOptions));
 app.use(flash());
