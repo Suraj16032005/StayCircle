@@ -39,11 +39,9 @@
               <p class="card-text text-muted mb-1" style="font-size: 0.85rem;">
                 <i class="fa-solid fa-location-dot me-1" style="color: #a0aec0;"></i><%= listing.location %>, <%= listing.country %>
               </p>
-              <% if (listing.trustScore > 0) { %>
-                <p class="card-text text-success mb-1" style="font-size: 0.85rem; font-weight: 600; color: #10b981 !important;">
-                  <i class="fa-solid fa-heart me-1" style="color: #fe424d;"></i><%= listing.trustScore %> Trusted <%= listing.trustScore === 1 ? 'Recommendation' : 'Recommendations' %>
-                </p>
-              <% } %>
+              <p class="card-text text-success mb-1 trust-score-container <%= listing.trustScore > 0 ? '' : 'd-none' %>" data-listing-id="<%= listing._id %>" style="font-size: 0.85rem; font-weight: 600; color: #10b981 !important;">
+                <i class="fa-solid fa-heart me-1" style="color: #fe424d;"></i><span class="trust-score-val"><%= listing.trustScore %></span> Trusted Recommendations
+              </p>
               <p class="card-text">
                 <span class="price-tag">&#8377;<%= listing.price.toLocaleString("en-IN") %></span> <span style="font-size: 0.85rem; color: #718096;">/ night</span>
               </p>

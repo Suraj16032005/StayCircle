@@ -8,10 +8,18 @@ const session = require('express-session');
 const { MongoStore } = require("connect-mongo");
 
 const app = express();  // Ye function:
+const http = require("http");
+const server = http.createServer(app);
+
+// Initialize Socket.IO with HTTP Server
+const { init: initSockets } = require("./socket/socket");
+initSockets(server);
+
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 app.use(methodOverride("_method")); // jab bhi post ka put ya delete karvana ho tab
 const ExpressError=require("./utils/ExpressError.js");
+const Notification = require("./models/notification.js");
 
 
 const listingRouter=require("./routes/listing.js");
@@ -82,10 +90,25 @@ passport.serializeUser(User.serializeUser());
 // Retrieve the user info from session
 passport.deserializeUser(User.deserializeUser());
 
-app.use((req,res,next)=>{
+app.use(async (req,res,next)=>{
     res.locals.success=req.flash("success");
     res.locals.error=req.flash("error");
     res.locals.currUser=req.user;
+    
+    // Fetch user notifications globally for navigation bar display
+    if (req.user) {
+        try {
+            const notifications = await Notification.find({ recipient: req.user._id })
+                .sort({ createdAt: -1 })
+                .limit(20);
+            res.locals.notifications = notifications;
+        } catch (err) {
+            console.error("Error loading user notifications:", err);
+            res.locals.notifications = [];
+        }
+    } else {
+        res.locals.notifications = [];
+    }
     next();
 });
 
@@ -116,6 +139,6 @@ app.use((err,req,res,next)=>{
     res.status(statusCode).render("error.ejs", {message});
 });
 
-app.listen(port, (req, res) => {
-    console.log("working");
+server.listen(port, () => {
+    console.log(`✅ Server is working on port ${port}`);
 });

@@ -82,6 +82,36 @@ module.exports.sendRequest = async (req, res) => {
     });
 
     await newRequest.save();
+
+    // Create and save database notification for offline loading
+    const Notification = require("../models/notification");
+    const socket = require("../socket/socket");
+    const notification = new Notification({
+        recipient: targetId,
+        sender: req.user._id,
+        type: "friend-request",
+        message: `${req.user.name || req.user.username} sent you a friend request.`
+    });
+    await notification.save();
+
+    // Emit live Socket.IO events to friend
+    socket.sendToUser(targetId, "notification", {
+        _id: notification._id,
+        type: "friend-request",
+        message: notification.message,
+        createdAt: notification.createdAt
+    });
+    socket.sendToUser(targetId, "friend-request", {
+        senderName: req.user.name || req.user.username,
+        senderUsername: req.user.username,
+        requestId: newRequest._id
+    });
+
+    // Support AJAX requests
+    if (req.xhr || req.headers["x-requested-with"] === "XMLHttpRequest") {
+        return res.json({ success: true });
+    }
+
     req.flash("success", "Friend request sent!");
     res.redirect("/friends");
 };
@@ -108,6 +138,51 @@ module.exports.acceptRequest = async (req, res) => {
     // Delete request
     await FriendRequest.findByIdAndDelete(requestId);
 
+    // Create and save database notification for offline loading
+    const Notification = require("../models/notification");
+    const socket = require("../socket/socket");
+    const notification = new Notification({
+        recipient: request.sender,
+        sender: req.user._id,
+        type: "friend-accepted",
+        message: `${req.user.name || req.user.username} accepted your friend request.`
+    });
+    await notification.save();
+
+    // Emit live Socket.IO events to the request sender
+    socket.sendToUser(request.sender, "notification", {
+        _id: notification._id,
+        type: "friend-accepted",
+        message: notification.message,
+        createdAt: notification.createdAt
+    });
+
+    const acceptorUser = await User.findById(req.user._id);
+    const isAcceptorOnline = socket.isUserOnline(req.user._id);
+    socket.sendToUser(request.sender, "friend-accepted", {
+        friend: {
+            _id: acceptorUser._id,
+            name: acceptorUser.name,
+            username: acceptorUser.username,
+            status: isAcceptorOnline ? "online" : "offline"
+        }
+    });
+
+    // Support AJAX requests
+    if (req.xhr || req.headers["x-requested-with"] === "XMLHttpRequest") {
+        const senderUser = await User.findById(request.sender);
+        const isSenderOnline = socket.isUserOnline(request.sender);
+        return res.json({
+            success: true,
+            friend: {
+                _id: senderUser._id,
+                name: senderUser.name,
+                username: senderUser.username,
+                status: isSenderOnline ? "online" : "offline"
+            }
+        });
+    }
+
     req.flash("success", "Friend request accepted!");
     res.redirect("/friends");
 };
@@ -129,6 +204,11 @@ module.exports.rejectRequest = async (req, res) => {
 
     // Delete request
     await FriendRequest.findByIdAndDelete(requestId);
+
+    // Support AJAX requests
+    if (req.xhr || req.headers["x-requested-with"] === "XMLHttpRequest") {
+        return res.json({ success: true });
+    }
 
     req.flash("success", "Friend request rejected.");
     res.redirect("/friends");

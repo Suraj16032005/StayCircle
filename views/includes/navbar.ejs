@@ -27,6 +27,53 @@
         </form>
 
          <div class="navbar-nav ms-auto">
+          <% if(currUser){ %>
+            <!-- Notification Bell Icon Dropdown -->
+            <div class="nav-item dropdown me-3 align-self-center position-relative" id="notification-dropdown-wrapper">
+                <a class="nav-link position-relative dropdown-toggle no-caret" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 0.5rem !important;">
+                    <i class="fa-solid fa-bell fs-5 text-secondary" id="notification-bell-icon"></i>
+                    <% const unreadCount = locals.notifications ? locals.notifications.filter(n => !n.isRead).length : 0; %>
+                    <span class="position-absolute badge rounded-pill bg-danger <%= unreadCount > 0 ? '' : 'd-none' %>" id="notification-badge" style="font-size: 0.65rem; padding: 0.25em 0.5em; top: 4px !important; left: 75% !important; z-index: 10;">
+                        <%= unreadCount %>
+                    </span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 py-2" aria-labelledby="navbarDropdownMenuLink" style="width: 320px; max-height: 400px; overflow-y: auto; right: 0; left: auto;" id="notification-list">
+                    <li class="dropdown-header border-bottom pb-2 d-flex justify-content-between align-items-center">
+                        <span class="font-weight-bold text-dark fs-6">Notifications</span>
+                        <% if (unreadCount > 0) { %>
+                            <button class="btn btn-link p-0 text-decoration-none text-danger small" id="mark-all-read-btn" style="font-size: 0.8rem;">Mark all read</button>
+                        <% } %>
+                    </li>
+                    
+                    <% if (!locals.notifications || locals.notifications.length === 0) { %>
+                        <li id="no-notifications-msg" class="text-center py-3 text-muted small">No new notifications</li>
+                    <% } else { %>
+                        <% for (let notification of locals.notifications) { %>
+                            <li class="notification-item border-bottom py-2 px-3 <%= notification.isRead ? '' : 'bg-light' %>" data-id="<%= notification._id %>">
+                                <div class="d-flex align-items-start">
+                                    <div class="me-2 mt-1">
+                                        <% if (notification.type === 'friend-request') { %>
+                                            <i class="fa-solid fa-user-plus text-primary"></i>
+                                        <% } else if (notification.type === 'friend-accepted') { %>
+                                            <i class="fa-solid fa-user-check text-success"></i>
+                                        <% } else if (notification.type === 'recommendation') { %>
+                                            <i class="fa-solid fa-star text-warning"></i>
+                                        <% } else { %>
+                                            <i class="fa-solid fa-bell text-secondary"></i>
+                                        <% } %>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <p class="mb-0 text-dark small" style="line-height: 1.4;"><%= notification.message %></p>
+                                        <small class="text-muted" style="font-size: 0.75rem;"><%= new Date(notification.createdAt).toLocaleDateString() %></small>
+                                    </div>
+                                </div>
+                            </li>
+                        <% } %>
+                    <% } %>
+                </ul>
+            </div>
+          <% } %>
+
           <% if(!currUser){ %>
           <a class="nav-link" href="/login">Login</a>
           <% } %>

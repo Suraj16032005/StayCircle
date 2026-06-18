@@ -483,3 +483,70 @@ body {
     color: #1a202c !important;
     transform: translateY(-1px);
 }
+
+/* Custom Notifications Dropdown & Bell Animation */
+.no-caret::after {
+    display: none !important;
+}
+
+#notification-dropdown-wrapper .dropdown-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#notification-list {
+    margin-top: 10px;
+    z-index: 1050;
+}
+
+.notification-item {
+    transition: background-color 0.2s ease;
+}
+
+.notification-item:hover {
+    background-color: #f8f9fa;
+}
+
+.notification-item.bg-light {
+    background-color: #f0f7ff !important; /* light blue hue for unread notifications */
+}
+
+/* Bell ring keyframe animation */
+@keyframes ring {
+    0% { transform: rotate(0); }
+    10% { transform: rotate(15deg); }
+    20% { transform: rotate(-10deg); }
+    30% { transform: rotate(10deg); }
+    40% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+    60% { transform: rotate(0); }
+    100% { transform: rotate(0); }
+}
+
+.bell-ring {
+    animation: ring 0.8s ease;
+}
+
+/* Toast styling override for sleek premium aesthetics */
+.custom-toast {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.toast-container {
+    z-index: 1100;
+}
+
+/* Online/Offline dots indicator transitions */
+.online-indicator {
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.online-indicator.online {
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.4);
+}

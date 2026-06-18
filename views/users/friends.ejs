@@ -40,9 +40,13 @@
                         <div class="list-group list-group-flush">
                             <% for (let friend of friends) { %>
                                 <div class="list-group-item py-3 px-4 border-0 d-flex align-items-center justify-content-between hover-bg-light transition">
-                                    <div class="d-flex align-items-center">
-                                        <div class="friend-avatar me-3 bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                    <div class="d-flex align-items-center position-relative">
+                                        <div class="friend-avatar me-3 bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center position-relative" style="width: 48px; height: 48px;">
                                             <span class="font-weight-bold" style="font-size: 1.2rem;"><%= (friend.name || friend.username).charAt(0).toUpperCase() %></span>
+                                            <!-- Online/Offline Status Indicator -->
+                                            <span class="position-absolute bottom-0 end-0 translate-middle-y rounded-circle border border-2 border-white online-indicator offline" 
+                                                  id="status-<%= friend._id %>"
+                                                  style="width: 12px; height: 12px; display: inline-block; background-color: #6c757d; right: -2px; bottom: -2px;"></span>
                                         </div>
                                         <div>
                                             <h6 class="mb-0 font-weight-bold text-dark"><%= friend.name || friend.username %></h6>

@@ -60,6 +60,51 @@ module.exports.createRecommendation = async (req, res) => {
     });
 
     await newRecommendation.save();
+
+    // Create and save database notification for offline loading
+    const Notification = require("../models/notification");
+    const socket = require("../socket/socket");
+    
+    // Find listing details to form a helpful notification message
+    const listing = await Listing.findById(listingId);
+    
+    const notification = new Notification({
+        recipient: friendId,
+        sender: req.user._id,
+        type: "recommendation",
+        message: `${req.user.name || req.user.username} recommended ${listing.title}.`,
+        listing: listingId
+    });
+    await notification.save();
+
+    // Emit live Socket.IO events to recommended friend
+    socket.sendToUser(friendId, "notification", {
+        _id: notification._id,
+        type: "recommendation",
+        message: notification.message,
+        createdAt: notification.createdAt
+    });
+
+    // Live Trust Score update calculation
+    const newTrustScore = await Recommendation.countDocuments({ listing: listingId });
+
+    // Emit trust score update to listing detail room
+    socket.broadcastToRoom(`listing:${listingId}`, "trust-score-update", {
+        listingId,
+        trustScore: newTrustScore
+    });
+
+    // Emit recommendation count update globally
+    socket.broadcastGlobal("recommendation-count", {
+        listingId,
+        trustScore: newTrustScore
+    });
+
+    // Support AJAX requests
+    if (req.xhr || req.headers["x-requested-with"] === "XMLHttpRequest") {
+        return res.json({ success: true, listingId, trustScore: newTrustScore });
+    }
+
     req.flash("success", "Recommendation sent successfully!");
     res.redirect(`/listings/${listingId}`);
 };
