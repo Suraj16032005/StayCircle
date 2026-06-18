@@ -1,0 +1,97 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container mt-4">
+    <!-- Header & Tabs -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="font-weight-bold mb-1">Recommendations</h2>
+            <p class="text-muted">Discover stays recommended directly to you by your trusted circle.</p>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-pills mb-4 bg-light p-1 rounded-pill" style="max-width: fit-content;">
+        <li class="nav-item">
+            <a class="nav-link rounded-pill px-4" href="/recommendations">
+                <i class="fa-solid fa-envelope-open me-2"></i>Recommended For You
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active rounded-pill px-4" href="/recommendations/sent">
+                <i class="fa-solid fa-paper-plane me-2"></i>Sent Recommendations
+            </a>
+        </li>
+    </ul>
+
+    <!-- Sent Recommendations Table -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-white border-0 py-3">
+            <h5 class="mb-0 font-weight-bold text-secondary">Your Sent Recommendations</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0 table-hover">
+                <thead class="table-light text-secondary" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                    <tr>
+                        <th class="ps-4">Listing</th>
+                        <th>Recommended To</th>
+                        <th>Date Sent</th>
+                        <th>Message Note</th>
+                        <th class="pe-4 text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% let validSent = recommendations.filter(rec => rec.listing); %>
+                    <% if (validSent.length === 0) { %>
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <div class="mb-3" style="font-size: 2.5rem; color: #cbd5e0;">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </div>
+                                <h6>No recommendations sent yet.</h6>
+                                <p class="small text-muted mb-0">Open any listing details page and click "Recommend to Friend" to share your first stay.</p>
+                            </td>
+                        </tr>
+                    <% } else { %>
+                        <% for (let rec of validSent) { %>
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <img src="<%= rec.listing.image.url %>" alt="<%= rec.listing.title %>" class="rounded me-3" style="width: 48px; height: 48px; object-fit: cover;">
+                                        <div>
+                                            <h6 class="mb-0 font-weight-bold text-dark"><%= rec.listing.title %></h6>
+                                            <small class="text-muted"><%= rec.listing.location %>, <%= rec.listing.country %></small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="friend-avatar me-2 bg-dark bg-opacity-10 text-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.85rem;">
+                                            <span class="font-weight-bold"><%= (rec.recommendedTo.name || rec.recommendedTo.username).charAt(0).toUpperCase() %></span>
+                                        </div>
+                                        <div>
+                                            <span class="font-weight-bold text-dark d-block" style="font-size: 0.9rem;"><%= rec.recommendedTo.name || rec.recommendedTo.username %></span>
+                                            <small class="text-muted">@<%= rec.recommendedTo.username %></small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-muted" style="font-size: 0.9rem;">
+                                    <%= new Date(rec.createdAt).toLocaleDateString("en-IN", { day: 'numeric', month: 'short', year: 'numeric' }) %>
+                                </td>
+                                <td class="text-muted" style="max-width: 250px; font-size: 0.9rem;">
+                                    <span class="d-inline-block text-truncate" style="max-width: 100%;" title="<%= rec.message %>">
+                                        <%= rec.message || '-' %>
+                                    </span>
+                                </td>
+                                <td class="pe-4 text-end">
+                                    <a href="/listings/<%= rec.listing._id %>" class="btn btn-sm btn-light border rounded-pill px-3">
+                                        <i class="fa-solid fa-arrow-up-right-from-square me-1"></i>View
+                                    </a>
+                                </td>
+                            </tr>
+                        <% } %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,86 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container mt-4">
+    <!-- Header & Search Box -->
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-7">
+            <h2 class="font-weight-bold mb-1">Find Friends</h2>
+            <p class="text-muted">Search by username or email to connect with trusted family and friends.</p>
+        </div>
+        <div class="col-md-5">
+            <form action="/friends/search" method="GET" class="d-flex search-form">
+                <div class="input-group">
+                    <input class="form-control rounded-start-pill border-end-0 ps-4 py-2" type="search" name="q" placeholder="Search by username or email..." aria-label="Search" value="<%= query %>" required>
+                    <button class="btn btn-dark rounded-end-pill px-4" type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Search Results Card -->
+    <div class="card border-0 shadow-sm rounded-4 mt-3">
+        <div class="card-header bg-white border-0 py-3">
+            <h5 class="mb-0 font-weight-bold text-secondary">Search Results for "<%= query %>"</h5>
+        </div>
+        <div class="card-body p-0">
+            <% if (results.length === 0) { %>
+                <div class="text-center py-5 text-muted">
+                    <div class="mb-3" style="font-size: 3rem; color: #cbd5e0;">
+                        <i class="fa-solid fa-user-slash"></i>
+                    </div>
+                    <h5>No users found</h5>
+                    <p class="small text-muted mb-0">We couldn't find any users matching "<%= query %>". Try searching for a different username or email.</p>
+                </div>
+            <% } else { %>
+                <div class="list-group list-group-flush">
+                    <% for (let result of results) { %>
+                        <div class="list-group-item py-3 px-4 border-0 d-flex align-items-center justify-content-between hover-bg-light transition">
+                            <div class="d-flex align-items-center">
+                                <div class="friend-avatar me-3 bg-dark bg-opacity-10 text-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                    <span class="font-weight-bold" style="font-size: 1.2rem;"><%= (result.user.name || result.user.username).charAt(0).toUpperCase() %></span>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 font-weight-bold text-dark"><%= result.user.name || result.user.username %></h6>
+                                    <small class="text-muted">@<%= result.user.username %></small>
+                                </div>
+                            </div>
+                            <div>
+                                <% if (result.requestStatus === "none") { %>
+                                    <form action="/friends/request/<%= result.user._id %>" method="POST" class="m-0">
+                                        <button type="submit" class="btn btn-sm btn-dark rounded-pill px-3">
+                                            <i class="fa-solid fa-user-plus me-1"></i>Send Friend Request
+                                        </button>
+                                    </form>
+                                <% } else if (result.requestStatus === "pending") { %>
+                                    <span class="badge bg-secondary rounded-pill px-3 py-2">
+                                        <i class="fa-solid fa-spinner me-1"></i>Request Pending
+                                    </span>
+                                <% } else if (result.requestStatus === "accepted") { %>
+                                    <span class="badge bg-success rounded-pill px-3 py-2">
+                                        <i class="fa-solid fa-user-group me-1"></i>Friends
+                                    </span>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            <% } %>
+        </div>
+    </div>
+    <div class="mt-4">
+        <a href="/friends" class="btn btn-sm btn-light border rounded-pill px-3">
+            <i class="fa-solid fa-arrow-left me-1"></i>Back to Friends
+        </a>
+    </div>
+</div>
+
+<style>
+    .hover-bg-light:hover {
+        background-color: #fafafa;
+    }
+    .transition {
+        transition: all 0.2s ease;
+    }
+</style>

@@ -17,6 +17,9 @@ const ExpressError=require("./utils/ExpressError.js");
 const listingRouter=require("./routes/listing.js");
 const reviewsRouter=require("./routes/review.js");
 const usersRouter=require("./routes/user.js");
+const inviteRouter=require("./routes/invite.js");
+const friendRouter=require("./routes/friend.js");
+const recommendationRouter=require("./routes/recommendation.js");
 
 const flash=require("connect-flash");
 const passport=require("passport");
@@ -89,7 +92,8 @@ app.use((req,res,next)=>{
 app.get("/demouser", async (req,res)=>{
     let fakeuser= new User({
         email: "student@gmail.com",
-        username:"surajnair"
+        username:"surajnair",
+        name: "Suraj Nair"
     });
     let registeredUser= await User.register(fakeuser, "password123");
     res.send(registeredUser);
@@ -97,6 +101,9 @@ app.get("/demouser", async (req,res)=>{
 
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
+app.use("/invites", inviteRouter);
+app.use("/friends", friendRouter);
+app.use("/recommendations", recommendationRouter);
 app.use("/",usersRouter);
 
 app.all("*",(req,res,next)=>{

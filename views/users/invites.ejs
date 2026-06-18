@@ -1,0 +1,93 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container mt-4">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-8">
+            <h2 class="font-weight-bold mb-1">Invite Dashboard</h2>
+            <p class="text-muted">Generate invite codes to invite your friends and family to StayCircle.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <form action="/invites/create" method="POST" class="m-0">
+                <button type="submit" class="btn btn-dark px-4 py-2">
+                    <i class="fa-solid fa-plus me-2"></i>Generate Invite
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-white border-0 py-3">
+            <h5 class="mb-0 font-weight-bold text-secondary">Your Generated Invites</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0 table-hover">
+                <thead class="table-light text-secondary" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                    <tr>
+                        <th class="ps-4">Invite Code</th>
+                        <th>Status</th>
+                        <th>Created Date</th>
+                        <th class="pe-4 text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (invites.length === 0) { %>
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">
+                                <div class="mb-3" style="font-size: 2.5rem; color: #cbd5e0;">
+                                    <i class="fa-solid fa-envelope-open-text"></i>
+                                </div>
+                                <h6>No invites generated yet.</h6>
+                                <p class="small text-muted mb-0">Click the button above to generate your first invite code.</p>
+                            </td>
+                        </tr>
+                    <% } else { %>
+                        <% for (let invite of invites) { %>
+                            <tr>
+                                <td class="ps-4 font-weight-bold">
+                                    <code class="px-2 py-1 bg-light text-danger rounded font-weight-bold" style="font-size: 1rem; border: 1px solid #f8d7da;">
+                                        <%= invite.code %>
+                                    </code>
+                                </td>
+                                <td>
+                                    <% if (invite.used) { %>
+                                        <span class="badge bg-secondary rounded-pill px-3 py-2">
+                                            <i class="fa-solid fa-user-check me-1"></i> Used by <%= invite.usedBy ? invite.usedBy.username : 'Unknown' %>
+                                        </span>
+                                    <% } else { %>
+                                        <span class="badge bg-success rounded-pill px-3 py-2">
+                                            <i class="fa-solid fa-clock me-1"></i> Unused
+                                        </span>
+                                    <% } %>
+                                </td>
+                                <td class="text-muted">
+                                    <%= new Date(invite.createdAt).toLocaleDateString("en-IN", { day: 'numeric', month: 'short', year: 'numeric' }) %>
+                                </td>
+                                <td class="pe-4 text-end">
+                                    <button class="btn btn-sm btn-light border rounded-pill copy-btn" data-code="<%= invite.code %>">
+                                        <i class="fa-solid fa-copy me-1"></i>Copy
+                                    </button>
+                                </td>
+                            </tr>
+                        <% } %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll(".copy-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            const code = button.getAttribute("data-code");
+            navigator.clipboard.writeText(code).then(() => {
+                const originalHtml = button.innerHTML;
+                button.innerHTML = '<i class="fa-solid fa-check me-1 text-success"></i>Copied!';
+                button.classList.add("btn-light");
+                setTimeout(() => {
+                    button.innerHTML = originalHtml;
+                }, 2000);
+            });
+        });
+    });
+</script>

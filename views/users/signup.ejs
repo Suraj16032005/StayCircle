@@ -6,6 +6,11 @@
             <h2 class="text-center mb-4 font-weight-bold">Signup for Travel</h2>
             <form action="/signup" method="post" class="needs-validation" novalidate>
                  <div class="mb-3">
+                     <label for="name" class="form-label">Full Name</label>
+                     <input type="text" name="name" class="form-control" placeholder="Enter your full name" required>
+                     <div class="invalid-feedback">Please enter your full name</div>
+                 </div>
+                 <div class="mb-3">
                      <label for="username" class="form-label">Username</label>
                      <input type="text" name="username" class="form-control" placeholder="Choose a username" required>
                      <div class="invalid-feedback">Please choose a username</div>
@@ -20,6 +25,11 @@
                      <input type="password" name="password" class="form-control" placeholder="Choose a password" required>
                      <div class="invalid-feedback">Please choose a password</div>
                  </div> 
+                 <div class="mb-3">
+                     <label for="inviteCode" class="form-label">Invite Code</label>
+                     <input type="text" name="inviteCode" class="form-control text-uppercase" placeholder="Enter invite code" required>
+                     <div class="invalid-feedback">Please enter a valid invite code</div>
+                 </div>
                  <button class="btn btn-success w-100 mt-2">Signup</button>
             </form>
         </div>

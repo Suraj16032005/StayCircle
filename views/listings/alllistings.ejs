@@ -24,7 +24,12 @@
     <% } else { %>
       <% for(listing of alllistings){ %>
         <a href="/listings/<%=listing._id%>" class="listing-link">
-          <div class="card col listing-card">
+          <div class="card col listing-card position-relative">
+            <% if (maxTrustScore > 0 && listing.trustScore === maxTrustScore) { %>
+              <span class="badge bg-danger position-absolute top-0 end-0 m-3 shadow-sm rounded-pill px-3 py-2" style="background-color: #fe424d !important; font-size: 0.75rem; z-index: 10;">
+                <i class="fa-solid fa-fire me-1"></i>Most Recommended
+              </span>
+            <% } %>
             <img src="<%=listing.image.url%>" class="card-img-top" alt="listing_img" style="height:20rem">
             <div class="card-body">
               <p class="card-text mb-1"><b>
@@ -34,6 +39,11 @@
               <p class="card-text text-muted mb-1" style="font-size: 0.85rem;">
                 <i class="fa-solid fa-location-dot me-1" style="color: #a0aec0;"></i><%= listing.location %>, <%= listing.country %>
               </p>
+              <% if (listing.trustScore > 0) { %>
+                <p class="card-text text-success mb-1" style="font-size: 0.85rem; font-weight: 600; color: #10b981 !important;">
+                  <i class="fa-solid fa-heart me-1" style="color: #fe424d;"></i><%= listing.trustScore %> Trusted <%= listing.trustScore === 1 ? 'Recommendation' : 'Recommendations' %>
+                </p>
+              <% } %>
               <p class="card-text">
                 <span class="price-tag">&#8377;<%= listing.price.toLocaleString("en-IN") %></span> <span style="font-size: 0.85rem; color: #718096;">/ night</span>
               </p>

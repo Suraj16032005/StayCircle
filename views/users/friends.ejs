@@ -1,0 +1,121 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container mt-4">
+    <!-- Header & Search -->
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-7">
+            <h2 class="font-weight-bold mb-1">Friends</h2>
+            <p class="text-muted">Connect with trusted friends and family to see their recommendations.</p>
+        </div>
+        <div class="col-md-5">
+            <form action="/friends/search" method="GET" class="d-flex search-form">
+                <div class="input-group">
+                    <input class="form-control rounded-start-pill border-end-0 ps-4 py-2" type="search" name="q" placeholder="Search by username or email..." aria-label="Search" required>
+                    <button class="btn btn-dark rounded-end-pill px-4" type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Friends List -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 font-weight-bold text-secondary">My Friends</h5>
+                    <span class="badge bg-danger rounded-pill px-3 py-2"><%= friends.length %> Connected</span>
+                </div>
+                <div class="card-body p-0">
+                    <% if (friends.length === 0) { %>
+                        <div class="text-center py-5 text-muted">
+                            <div class="mb-3" style="font-size: 3rem; color: #cbd5e0;">
+                                <i class="fa-solid fa-user-group"></i>
+                            </div>
+                            <h5>No friends connected yet</h5>
+                            <p class="small text-muted mb-0">Use the search bar above to find and connect with friends.</p>
+                        </div>
+                    <% } else { %>
+                        <div class="list-group list-group-flush">
+                            <% for (let friend of friends) { %>
+                                <div class="list-group-item py-3 px-4 border-0 d-flex align-items-center justify-content-between hover-bg-light transition">
+                                    <div class="d-flex align-items-center">
+                                        <div class="friend-avatar me-3 bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                            <span class="font-weight-bold" style="font-size: 1.2rem;"><%= (friend.name || friend.username).charAt(0).toUpperCase() %></span>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 font-weight-bold text-dark"><%= friend.name || friend.username %></h6>
+                                            <small class="text-muted">@<%= friend.username %></small>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="/recommendations?friendId=<%= friend._id %>" class="btn btn-sm btn-outline-dark rounded-pill px-3">
+                                            <i class="fa-solid fa-star me-1"></i>View Recommendations
+                                        </a>
+                                    </div>
+                                </div>
+                            <% } %>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Incoming Requests -->
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0 font-weight-bold text-secondary">Incoming Requests</h5>
+                </div>
+                <div class="card-body p-0">
+                    <% if (incomingRequests.length === 0) { %>
+                        <div class="text-center py-5 text-muted">
+                            <div class="mb-3" style="font-size: 2.5rem; color: #cbd5e0;">
+                                <i class="fa-solid fa-bell-slash"></i>
+                            </div>
+                            <p class="small text-muted mb-0">No pending requests</p>
+                        </div>
+                    <% } else { %>
+                        <div class="list-group list-group-flush">
+                            <% for (let request of incomingRequests) { %>
+                                <div class="list-group-item py-3 px-4 border-0">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="friend-avatar me-3 bg-secondary bg-opacity-10 text-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                            <span class="font-weight-bold"><%= (request.sender.name || request.sender.username).charAt(0).toUpperCase() %></span>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 font-weight-bold text-dark"><%= request.sender.name || request.sender.username %></h6>
+                                            <small class="text-muted">@<%= request.sender.username %> wants to connect</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <form action="/friends/accept/<%= request._id %>" method="POST" class="flex-grow-1 m-0">
+                                            <button type="submit" class="btn btn-sm btn-success w-100 rounded-pill py-2">
+                                                <i class="fa-solid fa-check me-1"></i>Accept
+                                            </button>
+                                        </form>
+                                        <form action="/friends/reject/<%= request._id %>" method="POST" class="flex-grow-1 m-0">
+                                            <button type="submit" class="btn btn-sm btn-light border w-100 rounded-pill py-2">
+                                                <i class="fa-solid fa-xmark me-1"></i>Reject
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            <% } %>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-bg-light:hover {
+        background-color: #fafafa;
+    }
+    .transition {
+        transition: all 0.2s ease;
+    }
+</style>

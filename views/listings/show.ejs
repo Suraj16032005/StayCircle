@@ -2,9 +2,22 @@
 
     <div class="row mt-3">
         <div class="col-8 offset-3">
-            <h2 class="mb-3 font-weight-bold">
+            <h2 class="mb-1 font-weight-bold">
                 <%=individualListing.title%>
             </h2>
+            <div class="d-flex align-items-center gap-2 mb-3 mt-1">
+                <% if (avgRating > 0) { %>
+                    <span class="text-warning" style="font-size: 0.9rem;">
+                        <% for(let i = 1; i <= 5; i++) { %>
+                            <i class="fa-<%= i <= Math.round(avgRating) ? 'solid' : 'regular' %> fa-star"></i>
+                        <% } %>
+                    </span>
+                    <span class="text-muted" style="font-size: 0.85rem;">(<%= individualListing.reviews.length %> <%= individualListing.reviews.length === 1 ? 'review' : 'reviews' %>)</span>
+                <% } %>
+                <span class="badge bg-success rounded-pill px-3 py-1.5" style="font-size: 0.85rem;">
+                    <i class="fa-solid fa-heart me-1"></i> Trust Score: <%= trustScore %> Trusted Recommendations
+                </span>
+            </div>
         </div>
         <div class="card col-6 offset-3 show-card">
             <div class="show-image-container">
@@ -60,13 +73,18 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 offset-3 mb-4 d-flex gap-2 align-items-center">
+        <div class="col-6 offset-3 mb-4 d-flex gap-2 align-items-center flex-wrap">
             <% if(currUser && individualListing.owner._id.equals(currUser._id)){ %>
                 <a href="/listings/edit/<%=individualListing._id%>"
                     class="btn btn-dark btn-edit-listing px-4">Edit</a>
                 <form method="post" action="/listings/<%=individualListing._id%>?_method=DELETE" class="m-0">
                     <button class="btn btn-dark btn-delete-listing px-4">Delete</button>
                 </form>
+            <% } %>
+            <% if(currUser) { %>
+                <button type="button" class="btn btn-success btn-recommend px-4" data-bs-toggle="modal" data-bs-target="#recommendModal" style="background-color: #fe424d !important; border: none !important;">
+                    <i class="fa-solid fa-paper-plane me-2"></i>Recommend
+                </button>
             <% } %>
             <a href="/listings" class="btn btn-back-listing px-4">Back</a>
         </div>
@@ -147,3 +165,52 @@
         </div>
 
     </div>
+
+    <!-- Recommend Modal -->
+    <% if (currUser) { %>
+        <div class="modal fade" id="recommendModal" tabindex="-1" aria-labelledby="recommendModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-4 border-0 shadow">
+                    <div class="modal-header border-0 pb-0">
+                        <h5 class="modal-title font-weight-bold" id="recommendModalLabel">Recommend "<%= individualListing.title %>"</h5>
+                        <button type="button" class="btn-close" data-bs-close="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/recommendations" method="POST">
+                        <div class="modal-body py-4">
+                            <input type="hidden" name="listingId" value="<%= individualListing._id %>">
+                            
+                            <% if (friends && friends.length > 0) { %>
+                                <div class="mb-3">
+                                    <label for="friendId" class="form-label font-weight-bold">Select Friend</label>
+                                    <select class="form-select rounded-3" id="friendId" name="friendId" required>
+                                        <option value="" disabled selected>Choose a friend...</option>
+                                        <% for (let friend of friends) { %>
+                                            <option value="<%= friend._id %>"><%= friend.name || friend.username %> (@<%= friend.username %>)</option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="message" class="form-label font-weight-bold">Optional Note</label>
+                                    <textarea class="form-control rounded-3" id="message" name="message" rows="3" placeholder="e.g., Great location near the beach!"></textarea>
+                                </div>
+                            <% } else { %>
+                                <div class="text-center py-3">
+                                    <div class="mb-3 text-muted" style="font-size: 3rem;">
+                                        <i class="fa-solid fa-user-group"></i>
+                                    </div>
+                                    <p class="text-muted">You need to connect with friends first to make recommendations.</p>
+                                    <a href="/friends" class="btn btn-sm btn-dark rounded-pill px-3">Go to Friends</a>
+                                </div>
+                            <% } %>
+                        </div>
+                        <div class="modal-footer border-0 pt-0">
+                            <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                            <% if (friends && friends.length > 0) { %>
+                                <button type="submit" class="btn btn-danger rounded-pill px-4" style="background-color: #fe424d; border: none;">Submit</button>
+                            <% } %>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <% } %>
