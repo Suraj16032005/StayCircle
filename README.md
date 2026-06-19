@@ -40,7 +40,7 @@ The platform allows users to create, manage, review, and explore property listin
 - Cloudinary
 - Multer
 - Express Session
-
+-Socket.io
 ---
 
 ## Database Collections
